@@ -1,42 +1,41 @@
 package `in`.hahow.android_recruit_project
 
-import android.R
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Text
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import `in`.hahow.android_recruit_project.model.CourseData
+import `in`.hahow.android_recruit_project.data.model.CourseData
 import `in`.hahow.android_recruit_project.ui.screen.main.MainCourseItem
+import `in`.hahow.android_recruit_project.ui.screen.main.MainScreen
 import `in`.hahow.android_recruit_project.ui.screen.main.testCourse
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.Reader
-import java.io.StringWriter
-import java.io.Writer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val list = loadJsonFile(resources)
+
         setContent {
             MaterialTheme {
-//                Greeting("Android")
-                MainCourseItem(data = testCourse)
+//                MainCourseItem(data = testCourse)
+                MainScreen(list.data!!)
             }
         }
 
-        loadJsonFile()
+        loadJsonFile(resources)
     }
 
-    fun loadJsonFile() {
+    // 測試是不是能撈到資料
+    fun loadJsonFile(resources: Resources): CourseData {
         val resourceId = resources.getIdentifier("data", "raw", packageName)
         val inputStream = resources.openRawResource(resourceId)
 
@@ -52,6 +51,7 @@ class MainActivity : ComponentActivity() {
 
         Log.i("Arthur", "$myDataList")
         Log.i("Arthur", "title:${myDataList.data?.get(1)?.title}")
+        return myDataList
     }
 
 }
