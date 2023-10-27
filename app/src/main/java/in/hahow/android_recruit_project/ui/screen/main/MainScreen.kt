@@ -1,5 +1,6 @@
 package `in`.hahow.android_recruit_project.ui.screen.main
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,10 +30,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import `in`.hahow.android_recruit_project.data.model.CourseItem
 import `in`.hahow.android_recruit_project.data.model.SuccessCriteria
@@ -55,20 +58,66 @@ val testCourse = CourseItem(
 )
 
 @Composable
-fun MainScreen(data: Array<CourseItem>) {
+fun MainScreen(
+    viewModel: MainViewModel = hiltViewModel()
+) {
 
     val filter = remember { mutableStateOf("") }
+//    val data = viewModel.courseList?.data
 
+
+    val data = remember {
+        mutableStateOf(
+            if (filter.value.isEmpty()) { viewModel.courseList?.data?.toList() }
+            else {
+                viewModel.courseList?.data?.filter {
+                    it.status == filter.toString()
+                }
+            }
+        )
+    }
+
+    Log.i("Arthur", "filter: ${filter.value}")
+
+//    val data = remember { mutableStateOf(viewModel.courseList?.data?.toList()) }
+//    val data = remember {
+//        mutableStateOf(
+//            viewModel.courseList?.data?.filter {
+//                it.status == filter.toString()
+//            }
+//        )
+//    }
 
     Column() {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .background(GreenPublished)
+        ) {
 
+        }
         LazyColumn(
             modifier = Modifier.background(GrayRecyclerViewBackground),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(data) {
-                MainCourseItem(data = it)
+//            data?.let { data ->
+//                items(data) {
+//                    MainCourseItem(data = it)
+//                }
+//            }
+
+            data.value?.let { data ->
+                items(data) {
+                    MainCourseItem(data = it)
+                }
             }
+
+//            viewModel.courseList?.let {courseList ->
+//                items(courseList.data) {
+//                    MainCourseItem(data = it)
+//                }
+//            }
         }
     }
 }
@@ -78,13 +127,13 @@ fun MainCourseItem(data: CourseItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(90.dp)
+            .height(108.dp)
             .background(Color.White)
             .padding(12.dp)
     ) {
         Box(
             modifier = Modifier
-                .width(96.dp)
+                .width(120.dp)
                 .fillMaxHeight()
                 .clip(RoundedCornerShape(6.dp)),
         ) {
@@ -125,7 +174,8 @@ fun MainCourseItem(data: CourseItem) {
             Text(
                 text = data.title,
                 color = Color.Black,
-                fontSize = 12.sp,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2
             )
@@ -164,11 +214,11 @@ fun CourseStatusBar(
                 },
                 color = GrayNormalText
             ,
-                fontSize = 9.sp
+                fontSize = 12.sp
             )
             LinearProgressIndicator(
                 modifier = Modifier
-                    .width(45.dp)
+                    .width(51.dp)
                     .height(3.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 progress = (current.toFloat() / target.toFloat()),
@@ -187,14 +237,14 @@ fun CourseStatusBar(
                 Icon(
                     imageVector = Icons.Default.Restore,
                     contentDescription = "",
-                    modifier = Modifier.size(14.dp),
+                    modifier = Modifier.size(15.dp),
                     tint = GrayNormalText
                 )
                 Text(
                     text = "倒數" + DateTimeUtils.daysBetweenDateAndToday(proposalDueTime).toString()
                             + "天",
                     modifier = Modifier.padding(start = 3.dp),
-                    fontSize = 9.sp,
+                    fontSize = 12.sp,
                     color = GrayNormalText
                 )
             }

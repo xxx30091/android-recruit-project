@@ -22,16 +22,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val list = loadJsonFile(resources)
+//        val list = loadJsonFile(resources)
 
         setContent {
             MaterialTheme {
 //                MainCourseItem(data = testCourse)
-                MainScreen(list.data!!)
+                MainScreen()
             }
         }
 
-        loadJsonFile(resources)
+//        loadJsonFile(resources)
     }
 
     // 測試是不是能撈到資料

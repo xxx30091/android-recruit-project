@@ -13,8 +13,8 @@ object NumberFormatUtils {
     }
 
     fun formatIncubatingTargetString(current: Int, target: Int): String {
-        return if (current > target) "$target/$target" + "人"
-        else "$current/$target" + "人"
+        return if (current > target) "$target / $target 人"
+        else "$current / $target 人"
     }
 
     fun formatTargetSuccessString(current: Int, target: Int): String {
