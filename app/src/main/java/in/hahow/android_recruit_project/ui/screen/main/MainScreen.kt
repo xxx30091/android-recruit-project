@@ -1,6 +1,12 @@
 package `in`.hahow.android_recruit_project.ui.screen.main
 
 import android.util.Log
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,7 +14,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +29,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +55,7 @@ import `in`.hahow.android_recruit_project.data.model.SuccessCriteria
 import `in`.hahow.android_recruit_project.ui.theme.GrayNormalText
 import `in`.hahow.android_recruit_project.ui.theme.GrayProgressBackground
 import `in`.hahow.android_recruit_project.ui.theme.GrayRecyclerViewBackground
+import `in`.hahow.android_recruit_project.ui.theme.GraySoft
 import `in`.hahow.android_recruit_project.ui.theme.GreenFilterItemBackground
 import `in`.hahow.android_recruit_project.ui.theme.GreenPublished
 import `in`.hahow.android_recruit_project.ui.theme.OrangeIncubating
@@ -74,30 +86,67 @@ fun MainScreen(
             it.status == filter.value
         }
     }
-    
+
     Log.i("Arthur", "filter:${filter.value}")
     Log.i("Arthur", "main screen data:${data}")
 
     Column() {
         CourseStatusFilter(
             currentValue = filter.value,
-            onIncubatingSelected = {
-                if (filter.value == "INCUBATING") filter.value = "" else filter.value = "INCUBATING"
-            },
-            onPublishedSelected = {
-                if (filter.value == "PUBLISHED") filter.value = "" else filter.value = "PUBLISHED"
-            },
-            onSuccessSelected = {
-                if (filter.value == "SUCCESS") filter.value = "" else filter.value = "SUCCESS"
-            }
+            onItemSelected = { if (filter.value == it) filter.value = "" else filter.value = it }
         )
-        LazyColumn(
-            modifier = Modifier.background(GrayRecyclerViewBackground),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            data?.let { data ->
-                items(data) {
-                    MainCourseItem(data = it)
+
+        if (viewModel.loadingState) {
+            // 讓使用者在 loading 時不會因為一片空白而不知道是不是已經 load 完
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(GrayRecyclerViewBackground),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(8) {
+                    MainCoursePlaceHolder()
+                }
+            }
+        } else {
+            if (data.isNullOrEmpty()) {
+                // 讓使用者在選擇的類別沒資料，時不會因為一片空白而不知道是不是已經 load 完
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.EventNote,
+                        contentDescription = "",
+                        modifier = Modifier.size(72.dp),
+                        tint = GreenPublished
+                    )
+                    Text(
+                        text = "目前沒有任何課程",
+                        modifier = Modifier.padding(4.dp),
+                        color = GreenPublished,
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "您選的類別目前沒有任何課程",
+                        modifier = Modifier.padding(4.dp),
+                        color = GrayNormalText,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(GrayRecyclerViewBackground),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(data) {
+                        MainCourseItem(data = it)
+                    }
                 }
             }
         }
@@ -124,22 +173,21 @@ fun MainCourseItem(data: CourseItem) {
                 model = data.coverImageUrl,
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center),
                 error = ColorPainter(Color.Gray),
                 placeholder = ColorPainter(Color.Gray)
             )
             Text(
                 text = when (data.status) {
-                    "INCUBATING" -> "募資中"
-                    "PUBLISHED" -> "已開課"
-                    "SUCCESS" -> "募資成功"
+                    CourseStatus.INCUBATING.value -> "募資中"
+                    CourseStatus.PUBLISHED.value -> "已開課"
+                    CourseStatus.SUCCESS.value -> "募資成功"
                     else -> "募資中"
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .background(
-                        color = if (data.status == "PUBLISHED") GreenPublished
+                        color = if (data.status == CourseStatus.SUCCESS.value) GreenPublished
                         else OrangeIncubating,
                         RoundedCornerShape(topStart = 6.dp, bottomEnd = 6.dp)
                     )
@@ -174,6 +222,69 @@ fun MainCourseItem(data: CourseItem) {
     }
 }
 
+@Preview
+@Composable
+fun MainCoursePlaceHolder() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(108.dp)
+            .background(Color.White)
+            .clickable { }
+            .padding(12.dp)
+    ) {
+        Spacer(
+            modifier = Modifier
+                .width(120.dp)
+                .fillMaxHeight()
+                .background(rememberShimmerEffect(), RoundedCornerShape(6.dp)),
+        )
+        Column(
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .fillMaxHeight(),
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+                    .background(rememberShimmerEffect(), RoundedCornerShape(8.dp))
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
+                    .padding(top = 4.dp)
+                    .height(20.dp)
+                    .background(rememberShimmerEffect(), RoundedCornerShape(8.dp))
+            )
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Column() {
+                    Spacer(
+                        modifier = Modifier
+                            .size(width = 54.dp, height = 12.dp)
+                            .background(rememberShimmerEffect(), RoundedCornerShape(8.dp))
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .size(width = 72.dp, height = 6.dp)
+                            .background(rememberShimmerEffect(), RoundedCornerShape(8.dp))
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .size(width = 54.dp, height = 12.dp)
+                        .background(rememberShimmerEffect(), RoundedCornerShape(8.dp))
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun CourseStatusBar(
     modifier: Modifier,
@@ -189,9 +300,15 @@ fun CourseStatusBar(
         {
             Text(
                 text = when (status) {
-                    "INCUBATING" -> NumberFormatUtils.formatIncubatingTargetString(current, target)
-                    "PUBLISHED" -> NumberFormatUtils.formatTargetPercentString(current, target)
-                    "SUCCESS" -> NumberFormatUtils.formatTargetSuccessString(current, target)
+                    CourseStatus.INCUBATING.value -> NumberFormatUtils.formatIncubatingTargetString(
+                        current, target
+                    )
+                    CourseStatus.PUBLISHED.value -> NumberFormatUtils.formatTargetPercentString(
+                        current, target
+                    )
+                    CourseStatus.SUCCESS.value -> NumberFormatUtils.formatTargetSuccessString(
+                        current, target
+                    )
                     else -> ""
                 },
                 color = GrayNormalText,
@@ -204,7 +321,7 @@ fun CourseStatusBar(
                     .clip(RoundedCornerShape(5.dp)),
                 progress = (current.toFloat() / target.toFloat()),
                 backgroundColor = GrayProgressBackground,
-                color = if (status == "INCUBATING" || status == "SUCCESS") OrangeIncubating
+                color = if (status == CourseStatus.INCUBATING.value || status == CourseStatus.SUCCESS.value) OrangeIncubating
                 else GreenPublished
             )
         }
@@ -222,9 +339,7 @@ fun CourseStatusBar(
                     tint = GrayNormalText
                 )
                 Text(
-                    text = "倒數" + DateTimeUtils.daysBetweenDateAndToday(proposalDueTime)
-                        .toString()
-                            + "天",
+                    text = "倒數${DateTimeUtils.daysBetweenDateAndToday(proposalDueTime)}天",
                     modifier = Modifier.padding(start = 3.dp),
                     fontSize = 12.sp,
                     color = GrayNormalText
@@ -237,9 +352,7 @@ fun CourseStatusBar(
 @Composable
 fun CourseStatusFilter(
     currentValue: String,
-    onIncubatingSelected: () -> Unit = {},
-    onSuccessSelected: () -> Unit = {},
-    onPublishedSelected: () -> Unit = {},
+    onItemSelected: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -250,16 +363,20 @@ fun CourseStatusFilter(
         verticalAlignment = Alignment.CenterVertically
     ) {
         FilterItem(
-            title = "已開課", isSelected = currentValue == "PUBLISHED",
-            onClick = { onPublishedSelected() }
+            title = "已開課", isSelected = currentValue == CourseStatus.PUBLISHED.value,
+            onClick = { onItemSelected(CourseStatus.PUBLISHED.value) }
         )
         FilterItem(
-            title = "募資中", isSelected = currentValue == "INCUBATING",
-            onClick = { onIncubatingSelected() }
+            title = "募資中", isSelected = currentValue == CourseStatus.INCUBATING.value,
+            onClick = { onItemSelected(CourseStatus.INCUBATING.value) }
         )
         FilterItem(
-            title = "募資成功", isSelected = currentValue == "SUCCESS",
-            onClick = { onSuccessSelected() }
+            title = "募資成功", isSelected = currentValue == CourseStatus.SUCCESS.value,
+            onClick = { onItemSelected(CourseStatus.SUCCESS.value) }
+        )
+        FilterItem(
+            title = "沒東東", isSelected = currentValue == CourseStatus.NOTHING.value,
+            onClick = { onItemSelected(CourseStatus.NOTHING.value) }
         )
     }
 }
@@ -267,8 +384,8 @@ fun CourseStatusFilter(
 @Composable
 fun FilterItem(
     title: String,
-    isSelected: Boolean = false,
-    onClick: () -> Unit = {},
+    isSelected: Boolean,
+    onClick: () -> Unit,
 ) {
     val corner = 15.dp
     Text(
@@ -298,3 +415,19 @@ fun PreviewMainCourseItem() {
     MainCourseItem(testCourse)
 }
 
+@Composable
+fun rememberShimmerEffect(): Brush {
+    val transition = rememberInfiniteTransition()
+    val translateAnimation = transition.animateColor(
+        initialValue = GraySoft,
+        targetValue = Color.Gray,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1200,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    return SolidColor(translateAnimation.value)
+}
