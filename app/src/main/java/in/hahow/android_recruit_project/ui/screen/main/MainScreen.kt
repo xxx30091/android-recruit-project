@@ -2,6 +2,8 @@ package `in`.hahow.android_recruit_project.ui.screen.main
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +25,6 @@ import androidx.compose.material.icons.filled.Restore
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,12 +44,13 @@ import `in`.hahow.android_recruit_project.data.model.SuccessCriteria
 import `in`.hahow.android_recruit_project.ui.theme.GrayNormalText
 import `in`.hahow.android_recruit_project.ui.theme.GrayProgressBackground
 import `in`.hahow.android_recruit_project.ui.theme.GrayRecyclerViewBackground
+import `in`.hahow.android_recruit_project.ui.theme.GreenFilterItemBackground
 import `in`.hahow.android_recruit_project.ui.theme.GreenPublished
 import `in`.hahow.android_recruit_project.ui.theme.OrangeIncubating
 import `in`.hahow.android_recruit_project.utils.DateTimeUtils
 import `in`.hahow.android_recruit_project.utils.NumberFormatUtils
 
-// 單純為了用來看 preview
+// 單純為了用來看 preview 所做的 mock data
 val testCourse = CourseItem(
     SuccessCriteria(numSoldTickets = 30),
     numSoldTickets = 0,
@@ -57,67 +60,46 @@ val testCourse = CourseItem(
     title = "學習 AI 一把抓：點亮人工智慧技能樹"
 )
 
+//@Preview
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
 
     val filter = remember { mutableStateOf("") }
-//    val data = viewModel.courseList?.data
-
-
-    val data = remember {
-        mutableStateOf(
-            if (filter.value.isEmpty()) { viewModel.courseList?.data?.toList() }
-            else {
-                viewModel.courseList?.data?.filter {
-                    it.status == filter.toString()
-                }
-            }
-        )
+    val data = if (filter.value.isEmpty()) {
+        viewModel.courseList?.data?.toList()
+    } else {
+        viewModel.courseList?.data?.filter {
+            it.status == filter.value
+        }
     }
-
-    Log.i("Arthur", "filter: ${filter.value}")
-
-//    val data = remember { mutableStateOf(viewModel.courseList?.data?.toList()) }
-//    val data = remember {
-//        mutableStateOf(
-//            viewModel.courseList?.data?.filter {
-//                it.status == filter.toString()
-//            }
-//        )
-//    }
+    
+    Log.i("Arthur", "filter:${filter.value}")
+    Log.i("Arthur", "main screen data:${data}")
 
     Column() {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(GreenPublished)
-        ) {
-
-        }
+        CourseStatusFilter(
+            currentValue = filter.value,
+            onIncubatingSelected = {
+                if (filter.value == "INCUBATING") filter.value = "" else filter.value = "INCUBATING"
+            },
+            onPublishedSelected = {
+                if (filter.value == "PUBLISHED") filter.value = "" else filter.value = "PUBLISHED"
+            },
+            onSuccessSelected = {
+                if (filter.value == "SUCCESS") filter.value = "" else filter.value = "SUCCESS"
+            }
+        )
         LazyColumn(
             modifier = Modifier.background(GrayRecyclerViewBackground),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-//            data?.let { data ->
-//                items(data) {
-//                    MainCourseItem(data = it)
-//                }
-//            }
-
-            data.value?.let { data ->
+            data?.let { data ->
                 items(data) {
                     MainCourseItem(data = it)
                 }
             }
-
-//            viewModel.courseList?.let {courseList ->
-//                items(courseList.data) {
-//                    MainCourseItem(data = it)
-//                }
-//            }
         }
     }
 }
@@ -129,6 +111,7 @@ fun MainCourseItem(data: CourseItem) {
             .fillMaxWidth()
             .height(108.dp)
             .background(Color.White)
+            .clickable { }
             .padding(12.dp)
     ) {
         Box(
@@ -199,7 +182,6 @@ fun CourseStatusBar(
     current: Int,
     proposalDueTime: String?
 ) {
-
     Box(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -212,8 +194,7 @@ fun CourseStatusBar(
                     "SUCCESS" -> NumberFormatUtils.formatTargetSuccessString(current, target)
                     else -> ""
                 },
-                color = GrayNormalText
-            ,
+                color = GrayNormalText,
                 fontSize = 12.sp
             )
             LinearProgressIndicator(
@@ -241,7 +222,8 @@ fun CourseStatusBar(
                     tint = GrayNormalText
                 )
                 Text(
-                    text = "倒數" + DateTimeUtils.daysBetweenDateAndToday(proposalDueTime).toString()
+                    text = "倒數" + DateTimeUtils.daysBetweenDateAndToday(proposalDueTime)
+                        .toString()
                             + "天",
                     modifier = Modifier.padding(start = 3.dp),
                     fontSize = 12.sp,
@@ -253,17 +235,64 @@ fun CourseStatusBar(
 }
 
 @Composable
-fun CourseFilter(
-    onINCUBATINGClick: () -> Unit
+fun CourseStatusFilter(
+    currentValue: String,
+    onIncubatingSelected: () -> Unit = {},
+    onSuccessSelected: () -> Unit = {},
+    onPublishedSelected: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .background(GrayRecyclerViewBackground)
+            .padding(start = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
+        FilterItem(
+            title = "已開課", isSelected = currentValue == "PUBLISHED",
+            onClick = { onPublishedSelected() }
+        )
+        FilterItem(
+            title = "募資中", isSelected = currentValue == "INCUBATING",
+            onClick = { onIncubatingSelected() }
+        )
+        FilterItem(
+            title = "募資成功", isSelected = currentValue == "SUCCESS",
+            onClick = { onSuccessSelected() }
+        )
     }
 }
 
-@Preview
+@Composable
+fun FilterItem(
+    title: String,
+    isSelected: Boolean = false,
+    onClick: () -> Unit = {},
+) {
+    val corner = 15.dp
+    Text(
+        text = title,
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .clip(RoundedCornerShape(corner))
+            .background(
+                color = if (isSelected) GreenFilterItemBackground else Color.White
+            )
+            .border(
+                width = 1.dp,
+                color = if (isSelected) GreenPublished else Color.White,
+                shape = RoundedCornerShape(corner)
+            )
+            .clickable { onClick() }
+            .padding(start = 12.dp, top = 8.dp, end = 12.dp, bottom = 8.dp),
+        color = GreenPublished,
+        fontSize = 15.sp,
+        textAlign = TextAlign.Center
+    )
+}
+
+//@Preview
 @Composable
 fun PreviewMainCourseItem() {
     MainCourseItem(testCourse)

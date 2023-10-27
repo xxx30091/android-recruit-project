@@ -19,14 +19,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     var courseList by mutableStateOf<CourseData?>(null)
 
-
     init {
         getCourseList()
     }
 
-
     private fun getCourseList() {
-
         viewModelScope.launch {
 
             val result = ThisApp.instance.courseRepository.loadAllCourses()
@@ -36,10 +33,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
             Log.i("Arthur", "MainViewModel.getCourseList: $courseList")
 
         }
-
     }
-
-
-
 
 }
