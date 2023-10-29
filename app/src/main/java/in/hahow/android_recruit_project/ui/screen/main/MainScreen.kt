@@ -7,6 +7,7 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,16 +25,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import `in`.hahow.android_recruit_project.R
 import `in`.hahow.android_recruit_project.data.model.CourseItem
 import `in`.hahow.android_recruit_project.data.model.SuccessCriteria
 import `in`.hahow.android_recruit_project.ui.theme.GrayNormalText
@@ -61,6 +70,7 @@ import `in`.hahow.android_recruit_project.ui.theme.GreenPublished
 import `in`.hahow.android_recruit_project.ui.theme.OrangeIncubating
 import `in`.hahow.android_recruit_project.utils.DateTimeUtils
 import `in`.hahow.android_recruit_project.utils.NumberFormatUtils
+import kotlinx.coroutines.launch
 
 // 單純為了用來看 preview 所做的 mock data
 val testCourse = CourseItem(
@@ -86,66 +96,98 @@ fun MainScreen(
             it.status == filter.value
         }
     }
+    val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+    val showGoToTopButton by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 5 // 列表目前顯示的 item 是第 5 個時，show 移至頂端按鈕
+        }
+    }
 
     Log.i("Arthur", "filter:${filter.value}")
     Log.i("Arthur", "main screen data:${data}")
 
-    Column() {
-        CourseStatusFilter(
-            currentValue = filter.value,
-            onItemSelected = { if (filter.value == it) filter.value = "" else filter.value = it }
-        )
-
-        if (viewModel.loadingState) {
-            // 讓使用者在 loading 時不會因為一片空白而不知道是不是已經 load 完
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(GrayRecyclerViewBackground),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(8) {
-                    MainCoursePlaceHolder()
-                }
+    Scaffold(
+        floatingActionButton = {
+            if (showGoToTopButton) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_to_top),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            scope.launch {
+                                listState.animateScrollToItem(0)
+                            }
+                        },
+                    contentScale = ContentScale.Fit
+                )
             }
-        } else {
-            if (data.isNullOrEmpty()) {
-                // 讓使用者在選擇的類別沒資料，時不會因為一片空白而不知道是不是已經 load 完
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.EventNote,
-                        contentDescription = "",
-                        modifier = Modifier.size(72.dp),
-                        tint = GreenPublished
-                    )
-                    Text(
-                        text = "目前沒有任何課程",
-                        modifier = Modifier.padding(4.dp),
-                        color = GreenPublished,
-                        fontSize = 21.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "您選的類別目前沒有任何課程",
-                        modifier = Modifier.padding(4.dp),
-                        color = GrayNormalText,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+        }
+    ) { paddings ->
+        Column(
+            modifier = Modifier.padding(paddings)
+        ) {
+            CourseStatusFilter(
+                currentValue = filter.value,
+                onItemSelected = {
+                    if (filter.value == it) filter.value = ""
+                    else filter.value = it
                 }
-            } else {
+            )
+            if (viewModel.loadingState) {
+                // 讓使用者在 loading 時不會因為一片空白而不知道是不是已經 load 完
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(GrayRecyclerViewBackground),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(data) {
-                        MainCourseItem(data = it)
+                    items(8) {
+                        MainCoursePlaceHolder()
+                    }
+                }
+            } else {
+                if (data.isNullOrEmpty()) {
+                    // 讓使用者在選擇的類別沒資料，時不會因為一片空白而不知道是不是已經 load 完
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.EventNote,
+                            contentDescription = "",
+                            modifier = Modifier.size(72.dp),
+                            tint = GreenPublished
+                        )
+                        Text(
+                            text = "目前沒有任何課程",
+                            modifier = Modifier.padding(4.dp),
+                            color = GreenPublished,
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "您選的類別目前沒有任何課程",
+                            modifier = Modifier.padding(4.dp),
+                            color = GrayNormalText,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(GrayRecyclerViewBackground),
+                        state = listState,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(data) {
+                            MainCourseItem(data = it)
+                        }
                     }
                 }
             }
