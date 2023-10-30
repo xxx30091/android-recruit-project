@@ -26,8 +26,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
@@ -35,6 +37,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -87,27 +92,41 @@ val testCourse = CourseItem(
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
-
-    val filter = remember { mutableStateOf("") }
-    val data = if (filter.value.isEmpty()) {
-        viewModel.courseList?.data?.toList()
+    val state by viewModel.state
+    val data = if (state.filter.isEmpty()) {
+        state.data
     } else {
-        viewModel.courseList?.data?.filter {
-            it.status == filter.value
-        }
+        state.data.filter { it.status == state.filter }
     }
+
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val showGoToTopButton by remember {
         derivedStateOf {
-            listState.firstVisibleItemIndex > 5 // 列表目前顯示的 item 是第 5 個時，show 移至頂端按鈕
+            listState.firstVisibleItemIndex > 3 // 列表目前顯示的 item 是第 3 個時，show 移至頂端按鈕
         }
     }
-
-    Log.i("Arthur", "filter:${filter.value}")
-    Log.i("Arthur", "main screen data:${data}")
+    // 其實目前的狀況並沒有刷新資料的必要，只是做一個功能作為展示
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.isLoading,
+        onRefresh = { viewModel.onEvent(MainViewModel.UiEvent.ReloadData) }
+    )
 
     Scaffold(
+        topBar = {
+            CourseStatusFilter(
+                modifier = Modifier,
+                currentValue = state.filter,
+                onItemSelected = {
+                    viewModel.onEvent(
+                        MainViewModel.UiEvent.SetFilter(
+                            if (state.filter == it) ""
+                            else it
+                        )
+                    )
+                }
+            )
+        },
         floatingActionButton = {
             if (showGoToTopButton) {
                 Image(
@@ -126,18 +145,13 @@ fun MainScreen(
             }
         }
     ) { paddings ->
-        Column(
-            modifier = Modifier.padding(paddings)
+        Box(
+            modifier = Modifier
+                .padding(paddings)
+                .pullRefresh(pullRefreshState)
         ) {
-            CourseStatusFilter(
-                currentValue = filter.value,
-                onItemSelected = {
-                    if (filter.value == it) filter.value = ""
-                    else filter.value = it
-                }
-            )
-            if (viewModel.loadingState) {
-                // 讓使用者在 loading 時不會因為一片空白而不知道是不是已經 load 完
+            // 讓使用者在 loading 時不會因為一片空白而不知道是不是已經 load 完
+            if (state.isLoading) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -149,10 +163,12 @@ fun MainScreen(
                     }
                 }
             } else {
-                if (data.isNullOrEmpty()) {
-                    // 讓使用者在選擇的類別沒資料，時不會因為一片空白而不知道是不是已經 load 完
+                // 讓使用者在選擇的類別沒資料時，不會因為一片空白而不知道是不是已經 load 完
+                if (data.isEmpty()) {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -190,6 +206,14 @@ fun MainScreen(
                         }
                     }
                 }
+            }
+            // 初始化時不要顯示下拉刷新的轉圈圖案
+            if (!viewModel.isInit.value) {
+                PullRefreshIndicator(
+                    refreshing = state.isLoading,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
             }
         }
     }
@@ -313,7 +337,7 @@ fun MainCoursePlaceHolder() {
                     Spacer(
                         modifier = Modifier
                             .padding(top = 4.dp)
-                            .size(width = 72.dp, height = 6.dp)
+                            .size(width = 51.dp, height = 3.dp)
                             .background(rememberShimmerEffect(), RoundedCornerShape(8.dp))
                     )
                 }
@@ -393,11 +417,12 @@ fun CourseStatusBar(
 
 @Composable
 fun CourseStatusFilter(
+    modifier: Modifier,
     currentValue: String,
     onItemSelected: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
             .background(GrayRecyclerViewBackground)
@@ -452,10 +477,10 @@ fun FilterItem(
 }
 
 //@Preview
-@Composable
-fun PreviewMainCourseItem() {
-    MainCourseItem(testCourse)
-}
+//@Composable
+//fun PreviewMainCourseItem() {
+//    MainCourseItem(testCourse)
+//}
 
 @Composable
 fun rememberShimmerEffect(): Brush {
