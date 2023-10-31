@@ -63,7 +63,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     sealed class UiEvent {
         class SetFilter(val filter: String) : UiEvent()
-        object ReloadData :UiEvent()
+        object ReloadData : UiEvent()
     }
 }
 

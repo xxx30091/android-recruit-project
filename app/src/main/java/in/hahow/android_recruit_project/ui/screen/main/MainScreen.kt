@@ -43,7 +43,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -59,13 +58,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import `in`.hahow.android_recruit_project.R
 import `in`.hahow.android_recruit_project.data.model.CourseItem
-import `in`.hahow.android_recruit_project.data.model.SuccessCriteria
+import `in`.hahow.android_recruit_project.ui.preview.CourseDataProvider
 import `in`.hahow.android_recruit_project.ui.theme.GrayNormalText
 import `in`.hahow.android_recruit_project.ui.theme.GrayProgressBackground
 import `in`.hahow.android_recruit_project.ui.theme.GrayRecyclerViewBackground
@@ -76,16 +76,6 @@ import `in`.hahow.android_recruit_project.ui.theme.OrangeIncubating
 import `in`.hahow.android_recruit_project.utils.DateTimeUtils
 import `in`.hahow.android_recruit_project.utils.NumberFormatUtils
 import kotlinx.coroutines.launch
-
-// 單純為了用來看 preview 所做的 mock data
-val testCourse = CourseItem(
-    SuccessCriteria(numSoldTickets = 30),
-    numSoldTickets = 0,
-    status = "INCUBATING",
-    proposalDueTime = "2023-11-01T16:00:00.000Z",
-    coverImageUrl = "https://images.api.hahow.in/images/614eca15a39712000619b672",
-    title = "學習 AI 一把抓：點亮人工智慧技能樹"
-)
 
 //@Preview
 @Composable
@@ -476,11 +466,13 @@ fun FilterItem(
     )
 }
 
-//@Preview
-//@Composable
-//fun PreviewMainCourseItem() {
-//    MainCourseItem(testCourse)
-//}
+@Preview
+@Composable
+fun PreviewMainCourseItem(
+    @PreviewParameter (CourseDataProvider::class) data: CourseItem
+) {
+    MainCourseItem(data)
+}
 
 @Composable
 fun rememberShimmerEffect(): Brush {
