@@ -211,6 +211,7 @@ fun MainScreen(
         viewModel.eventFlow.collect { event ->
             when (event) {
                 is MainViewModel.UiEvent.OnCourseClick -> {
+                    // 我們可以在這邊設定畫面跳轉
                     Toast.makeText(context, event.title, Toast.LENGTH_SHORT).show()
                 }
             }
