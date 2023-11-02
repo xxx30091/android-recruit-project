@@ -1,6 +1,6 @@
 package `in`.hahow.android_recruit_project.ui.screen.main
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -73,6 +73,7 @@ import `in`.hahow.android_recruit_project.ui.theme.GraySoft
 import `in`.hahow.android_recruit_project.ui.theme.GreenFilterItemBackground
 import `in`.hahow.android_recruit_project.ui.theme.GreenPublished
 import `in`.hahow.android_recruit_project.ui.theme.OrangeIncubating
+import `in`.hahow.android_recruit_project.ui.widget.UiEventHandler
 import `in`.hahow.android_recruit_project.utils.DateTimeUtils
 import `in`.hahow.android_recruit_project.utils.NumberFormatUtils
 import kotlinx.coroutines.launch
@@ -83,12 +84,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val state by viewModel.state
-    val data = if (state.filter.isEmpty()) {
-        state.data
-    } else {
-        state.data.filter { it.status == state.filter }
-    }
-
+    val data = state.data
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val showGoToTopButton by remember {
@@ -99,7 +95,7 @@ fun MainScreen(
     // 其實目前的狀況並沒有刷新資料的必要，只是做一個功能作為展示
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
-        onRefresh = { viewModel.onEvent(MainViewModel.UiEvent.ReloadData) }
+        onRefresh = { viewModel.onEvent(MainEvent.ReloadData) }
     )
 
     Scaffold(
@@ -109,7 +105,7 @@ fun MainScreen(
                 currentValue = state.filter,
                 onItemSelected = {
                     viewModel.onEvent(
-                        MainViewModel.UiEvent.SetFilter(
+                        MainEvent.SetFilter(
                             if (state.filter == it) ""
                             else it
                         )
@@ -192,7 +188,10 @@ fun MainScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(data) {
-                            MainCourseItem(data = it)
+                            MainCourseItem(
+                                data = it,
+                                onItemClick = { title -> viewModel.showCourseTitle(title) }
+                            )
                         }
                     }
                 }
@@ -207,16 +206,29 @@ fun MainScreen(
             }
         }
     }
+
+    UiEventHandler { context ->
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is MainViewModel.UiEvent.OnCourseClick -> {
+                    Toast.makeText(context, event.title, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 }
 
 @Composable
-fun MainCourseItem(data: CourseItem) {
+fun MainCourseItem(
+    data: CourseItem,
+    onItemClick: (String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(108.dp)
             .background(Color.White)
-            .clickable { }
+            .clickable { onItemClick(data.title) }
             .padding(12.dp)
     ) {
         Box(
@@ -471,7 +483,7 @@ fun FilterItem(
 fun PreviewMainCourseItem(
     @PreviewParameter (CourseDataProvider::class) data: CourseItem
 ) {
-    MainCourseItem(data)
+    MainCourseItem(data) {}
 }
 
 @Composable

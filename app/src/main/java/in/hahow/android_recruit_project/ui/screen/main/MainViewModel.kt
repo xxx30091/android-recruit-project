@@ -2,20 +2,17 @@ package `in`.hahow.android_recruit_project.ui.screen.main
 
 import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.hahow.android_recruit_project.ThisApp
-import `in`.hahow.android_recruit_project.data.loader.CourseRepository
 import `in`.hahow.android_recruit_project.data.model.CourseData
 import `in`.hahow.android_recruit_project.data.model.CourseItem
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,13 +22,16 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _state = mutableStateOf(MainScreenState())
     val state: State<MainScreenState> = _state
 
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     val isInit = mutableStateOf(true)
 
     init {
         getCourseList()
     }
 
-    private fun getCourseList() {
+    private fun getCourseList(filter: String = "") {
 
         viewModelScope.launch {
 
@@ -40,31 +40,41 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
             _state.value = _state.value.copy(
                 isLoading = false,
-                data = result.data.toList(),
+                data = if (filter.isEmpty()) result.data.toList()
+                else result.data.filter { it.status == filter },
+                filter = filter
             )
             Log.i("Arthur", "MainViewModel.getCourseList: ${_state.value.data}")
-
         }
     }
 
-    fun onEvent(event: UiEvent) {
+    fun onEvent(event: MainEvent) {
         when (event) {
-            is UiEvent.SetFilter -> {
-                _state.value = _state.value.copy(filter = event.filter)
+            is MainEvent.SetFilter -> {
+                getCourseList(event.filter)
                 Log.i("Arthur", "SetFilter: filter=${_state.value.filter}, event.filter=${event.filter}")
             }
-            UiEvent.ReloadData -> {
+            MainEvent.ReloadData -> {
                 isInit.value = false
-                getCourseList()
+                getCourseList(_state.value.filter)
             }
-            else -> {}
+        }
+    }
+
+    fun showCourseTitle(title: String) {
+        viewModelScope.launch {
+            _eventFlow.emit(UiEvent.OnCourseClick(title))
         }
     }
 
     sealed class UiEvent {
-        class SetFilter(val filter: String) : UiEvent()
-        object ReloadData : UiEvent()
+        class OnCourseClick(val title: String) : UiEvent()
     }
+}
+
+sealed class MainEvent {
+    class SetFilter(val filter: String) : MainEvent()
+    object ReloadData : MainEvent()
 }
 
 data class MainScreenState(
