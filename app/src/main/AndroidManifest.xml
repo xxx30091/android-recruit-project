@@ -3,6 +3,8 @@
     package="in.hahow.android_recruit_project" >
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--    Play Console 上的版本要有此權限才能建立商品    -->
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <application
         android:name=".ThisApp"

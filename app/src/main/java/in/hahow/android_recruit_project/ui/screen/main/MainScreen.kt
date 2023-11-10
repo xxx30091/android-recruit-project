@@ -1,12 +1,15 @@
 package `in`.hahow.android_recruit_project.ui.screen.main
 
 import android.widget.Toast
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,10 +65,16 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import coil.compose.AsyncImage
+import com.google.accompanist.navigation.animation.composable
 import `in`.hahow.android_recruit_project.R
 import `in`.hahow.android_recruit_project.data.model.CourseItem
+import `in`.hahow.android_recruit_project.ui.nav.SCREEN_MAIN
 import `in`.hahow.android_recruit_project.ui.preview.CourseDataProvider
+import `in`.hahow.android_recruit_project.ui.screen.purchase.navToPurchase
 import `in`.hahow.android_recruit_project.ui.theme.GrayNormalText
 import `in`.hahow.android_recruit_project.ui.theme.GrayProgressBackground
 import `in`.hahow.android_recruit_project.ui.theme.GrayRecyclerViewBackground
@@ -81,7 +90,8 @@ import kotlinx.coroutines.launch
 //@Preview
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel()
+    navController: NavHostController,
+    viewModel: MainViewModel
 ) {
     val state by viewModel.state
     val data = state.data
@@ -213,6 +223,7 @@ fun MainScreen(
                 is MainViewModel.UiEvent.OnCourseClick -> {
                     // 我們可以在這邊設定畫面跳轉
                     Toast.makeText(context, event.title, Toast.LENGTH_SHORT).show()
+                    navController.navToPurchase()
                 }
             }
         }
@@ -502,4 +513,25 @@ fun rememberShimmerEffect(): Brush {
         )
     )
     return SolidColor(translateAnimation.value)
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.main(navController: NavHostController) {
+    composable(
+        route = SCREEN_MAIN,
+        enterTransition = { slideInHorizontally() },
+        exitTransition = { slideOutHorizontally() }
+    ) {
+        val viewModel = hiltViewModel<MainViewModel>()
+        MainScreen(navController, viewModel)
+    }
+}
+
+fun NavHostController.navigateToMain(builder: NavOptionsBuilder.() -> Unit) {
+    navigate(route = SCREEN_MAIN, builder = builder)
+//    navigate(route = BottomNavItem.Video.route)
+}
+
+fun NavHostController.popUpToMain() {
+    popBackStack(route = SCREEN_MAIN, inclusive = false)
 }
