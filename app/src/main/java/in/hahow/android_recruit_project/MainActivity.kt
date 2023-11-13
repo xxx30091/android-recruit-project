@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
                 val purchaseHelper = PurchaseHelper(this)
                 purchaseHelper.billingSetup()
 
+                // 用來控制畫面跳轉動畫
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = SCREEN_MAIN

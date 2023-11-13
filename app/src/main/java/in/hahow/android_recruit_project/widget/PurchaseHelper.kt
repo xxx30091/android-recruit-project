@@ -1,6 +1,7 @@
 package `in`.hahow.android_recruit_project.widget
 
 import android.app.Activity
+import android.util.Log
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -58,6 +59,8 @@ data class PurchaseHelper(val activity: Activity) {
                     queryProduct(demoProductId)
                     reloadPurchase()
                 } else {
+                    // 在模擬器上就算有 play store 不管怎麼做都會是連接失敗，用實機測才有辦法
+                    Log.i("Arthur", "billingResult: $billingResult")
                     _statusText.value = "Billing Client Connection Failure"
                 }
             }

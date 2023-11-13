@@ -114,8 +114,8 @@ fun PreviewPurchaseScreen() {
 fun NavGraphBuilder.purchase(navController: NavHostController, purchaseHelper: PurchaseHelper) {
     composable(
         route = SCREEN_PURCHASE,
-        enterTransition = { slideInHorizontally() },
-        exitTransition = { slideOutHorizontally() }
+        enterTransition = { slideInHorizontally { it } },
+        exitTransition = { slideOutHorizontally { it } }
     ) {
         PurchaseScreen(navController, purchaseHelper)
     }

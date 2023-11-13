@@ -99,7 +99,7 @@ fun MainScreen(
     val listState = rememberLazyListState()
     val showGoToTopButton by remember {
         derivedStateOf {
-            listState.firstVisibleItemIndex > 3 // 列表目前顯示的 item 是第 3 個時，show 移至頂端按鈕
+            listState.firstVisibleItemIndex >= 3 // 列表目前顯示的 item 是第 3 個時，show 移至頂端按鈕
         }
     }
     // 其實目前的狀況並沒有刷新資料的必要，只是做一個功能作為展示
