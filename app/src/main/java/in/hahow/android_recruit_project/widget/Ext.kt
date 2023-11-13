@@ -21,3 +21,7 @@ fun rememberBottomSheetNavigator(skipHalfExpanded: Boolean): BottomSheetNavigato
         BottomSheetNavigator(sheetState = sheetState)
     }
 }
+
+public fun kotlin.String.navArgs(vararg args: kotlin.Any?): String {
+    return "/$args"
+}

@@ -50,7 +50,7 @@ fun PurchaseScreen(navController: NavHostController, purchaseHelper: PurchaseHel
             .fillMaxSize(),
     ) {
         IconButton(
-            onClick = { navController.popUpToMain() },
+            onClick = { navController.popBackStack() },
             modifier = Modifier
                 .size(30.dp)
                 .align(Alignment.TopStart),

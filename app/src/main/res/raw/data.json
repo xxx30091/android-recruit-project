@@ -8,7 +8,8 @@
       "status": "INCUBATING",
       "proposalDueTime": "2024-01-06T16:00:00.000Z",
       "coverImageUrl": "https://images.api.hahow.in/images/614eca15a39712000619b672",
-      "title": "學習 AI 一把抓：點亮人工智慧技能樹"
+      "title": "學習 AI 一把抓：點亮人工智慧技能樹",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     },
     {
       "successCriteria": {
@@ -18,7 +19,8 @@
       "status": "INCUBATING",
       "proposalDueTime": "2023-11-05T16:00:00.000Z",
       "title": "療癒動物似顏繪：提升插畫魅力的風格提煉術！",
-      "coverImageUrl": "https://images.api.hahow.in/images/61aa41c75c11460006886198"
+      "coverImageUrl": "https://images.api.hahow.in/images/61aa41c75c11460006886198",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
     },
     {
       "successCriteria": {
@@ -28,7 +30,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-30T16:00:00.000Z",
       "title": "米其林三星主廚教你做！時尚法式甜點的秘密",
-      "coverImageUrl": "https://images.api.hahow.in/images/619fcfd1072d3d0006c4f2f5"
+      "coverImageUrl": "https://images.api.hahow.in/images/619fcfd1072d3d0006c4f2f5",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
     },
     {
       "successCriteria": {
@@ -38,7 +41,8 @@
       "status": "INCUBATING",
       "proposalDueTime": "2023-12-30T16:00:00.000Z",
       "title": "遊戲譯者必備：掌握日文遊戲翻譯要領",
-      "coverImageUrl": "https://images.api.hahow.in/images/5e8fc7d5939c78360d3f3d01"
+      "coverImageUrl": "https://images.api.hahow.in/images/5e8fc7d5939c78360d3f3d01",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
     },
     {
       "successCriteria": {
@@ -48,7 +52,8 @@
       "status": "PUBLISHED",
       "title": "10 單元 ETF 必修攻略，全球投資教戰守則！",
       "coverImageUrl": "https://images.api.hahow.in/images/61a4624067cd3f00072b349b",
-      "totalVideoLengthInSeconds": 21449
+      "totalVideoLengthInSeconds": 21449,
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
     },
     {
       "successCriteria": {
@@ -58,7 +63,8 @@
       "status": "INCUBATING",
       "proposalDueTime": "2023-12-29T16:00:00.000Z",
       "title": "進階造型師技法在家學 - 新娘秘書實戰班",
-      "coverImageUrl": "https://images.api.hahow.in/images/61839dcab399ff00072815f0"
+      "coverImageUrl": "https://images.api.hahow.in/images/61839dcab399ff00072815f0",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
     },
     {
       "successCriteria": {
@@ -67,7 +73,8 @@
       "numSoldTickets": 90,
       "status": "PUBLISHED",
       "title": "加密貨幣新手攻略 | 從買賣入門到自動交易",
-      "coverImageUrl": "https://images.api.hahow.in/images/618b26d83a0b8d00073519e0"
+      "coverImageUrl": "https://images.api.hahow.in/images/618b26d83a0b8d00073519e0",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
     },
     {
       "successCriteria": {
@@ -77,7 +84,8 @@
       "status": "INCUBATING",
       "proposalDueTime": "2023-12-23T16:00:00.000Z",
       "title": "Steve 教練教你 | 14 週解鎖你的運動表現潛能",
-      "coverImageUrl": "https://images.api.hahow.in/images/61820a687bcc4d000656a22d"
+      "coverImageUrl": "https://images.api.hahow.in/images/61820a687bcc4d000656a22d",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -87,7 +95,8 @@
       "status": "INCUBATING",
       "proposalDueTime": "2023-12-17T16:00:00.000Z",
       "title": "少女人妻華麗變身：七大妝容七彩的夢幻樂園",
-      "coverImageUrl": "https://images.api.hahow.in/images/61888fa7b259500007e2cb21"
+      "coverImageUrl": "https://images.api.hahow.in/images/61888fa7b259500007e2cb21",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
     },
     {
       "successCriteria": {
@@ -96,7 +105,8 @@
       "numSoldTickets": 487,
       "status": "PUBLISHED",
       "title": "Procreate 插畫入門－從素描到風格",
-      "coverImageUrl": "https://images.api.hahow.in/images/618a4702a84beb00063ccd16"
+      "coverImageUrl": "https://images.api.hahow.in/images/618a4702a84beb00063ccd16",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
     },
     {
       "successCriteria": {
@@ -105,7 +115,8 @@
       "numSoldTickets": 1119,
       "status": "PUBLISHED",
       "title": "創作坊精華：入手專家心法，讓品牌創意變身",
-      "coverImageUrl": "https://images.api.hahow.in/images/618de3382ff6b700068c5762"
+      "coverImageUrl": "https://images.api.hahow.in/images/618de3382ff6b700068c5762",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
     },
     {
       "successCriteria": {
@@ -114,7 +125,8 @@
       "numSoldTickets": 58,
       "status": "PUBLISHED",
       "title": "風格型塑學 打造你的衣櫥系統",
-      "coverImageUrl": "https://images.api.hahow.in/images/6178b8615a90190006898a59"
+      "coverImageUrl": "https://images.api.hahow.in/images/6178b8615a90190006898a59",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"
     },
     {
       "successCriteria": {
@@ -124,7 +136,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-09T16:00:00.000Z",
       "title": "陪你回回憶：長者與失智者的陪伴指南",
-      "coverImageUrl": "https://images.api.hahow.in/images/618a5308a84beb00063ce63d"
+      "coverImageUrl": "https://images.api.hahow.in/images/618a5308a84beb00063ce63d",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"
     },
     {
       "successCriteria": {
@@ -134,7 +147,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-09T16:00:00.000Z",
       "title": "Google Apps Script 入門 - GAS 跨平台生活應用",
-      "coverImageUrl": "https://images.api.hahow.in/images/61835b7a55935700077d4024"
+      "coverImageUrl": "https://images.api.hahow.in/images/61835b7a55935700077d4024",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -143,7 +157,8 @@
       "numSoldTickets": 991,
       "status": "PUBLISHED",
       "title": "銷售文案：寫出你的產品熱賣轉換率",
-      "coverImageUrl": "https://images.api.hahow.in/images/617a0fad5a901900068baf95"
+      "coverImageUrl": "https://images.api.hahow.in/images/617a0fad5a901900068baf95",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -152,7 +167,8 @@
       "numSoldTickets": 124,
       "status": "PUBLISHED",
       "title": "小資族圓夢計畫，第一次買房收租就上手",
-      "coverImageUrl": "https://images.api.hahow.in/images/6166a3dc2ba42d0007e344ea"
+      "coverImageUrl": "https://images.api.hahow.in/images/6166a3dc2ba42d0007e344ea",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -162,7 +178,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-29T16:00:00.000Z",
       "title": "J Team 小學堂－英雄聯盟爬分 10 大重點",
-      "coverImageUrl": "https://images.api.hahow.in/images/614c237ddeb4b100078678a1"
+      "coverImageUrl": "https://images.api.hahow.in/images/614c237ddeb4b100078678a1",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -172,7 +189,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-14T16:00:00.000Z",
       "title": "Knitting好好玩！自己織圍巾、披肩、羊毛帽",
-      "coverImageUrl": "https://images.api.hahow.in/images/6149d8fc57da0b0006347fb2"
+      "coverImageUrl": "https://images.api.hahow.in/images/6149d8fc57da0b0006347fb2",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -181,7 +199,8 @@
       "numSoldTickets": 24,
       "status": "PUBLISHED",
       "title": "放下酒譜！跟著 Mars 飛向浩瀚無垠調酒宇宙",
-      "coverImageUrl": "https://images.api.hahow.in/images/617824e6b2db2c0006cdd548"
+      "coverImageUrl": "https://images.api.hahow.in/images/617824e6b2db2c0006cdd548",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -191,7 +210,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-14T16:00:00.000Z",
       "title": "小資入門籌碼課：提高短線操作勝率",
-      "coverImageUrl": "https://images.api.hahow.in/images/618a3de16dee9d0006bdbc25"
+      "coverImageUrl": "https://images.api.hahow.in/images/618a3de16dee9d0006bdbc25",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -201,7 +221,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-24T16:00:00.000Z",
       "title": "人物專訪怎麼寫？訪綱、採訪、寫作心法",
-      "coverImageUrl": "https://images.api.hahow.in/images/614a042f77d1760007e99c94"
+      "coverImageUrl": "https://images.api.hahow.in/images/614a042f77d1760007e99c94",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -210,7 +231,8 @@
       "numSoldTickets": 58,
       "status": "PUBLISHED",
       "title": "新手開店0到1！餐飲創業成功必讀攻略術！",
-      "coverImageUrl": "https://images.api.hahow.in/images/611f1af9eb00c70006f8be87"
+      "coverImageUrl": "https://images.api.hahow.in/images/611f1af9eb00c70006f8be87",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -220,7 +242,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-1T16:00:00.000Z",
       "title": "植物水彩繪 - 石斛蘭的觀察紀錄",
-      "coverImageUrl": "https://images.api.hahow.in/images/615e6fb573e0700006d14e2b"
+      "coverImageUrl": "https://images.api.hahow.in/images/615e6fb573e0700006d14e2b",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     },
     {
       "successCriteria": {
@@ -230,7 +253,8 @@
       "status": "SUCCESS",
       "proposalDueTime": "2023-12-10T16:00:00.000Z",
       "title": "RyuuuTV看動漫看日劇，零到N4道地說日文",
-      "coverImageUrl": "https://images.api.hahow.in/images/61541433666b1b0006b32be3"
+      "coverImageUrl": "https://images.api.hahow.in/images/61541433666b1b0006b32be3",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     }
   ]
 }

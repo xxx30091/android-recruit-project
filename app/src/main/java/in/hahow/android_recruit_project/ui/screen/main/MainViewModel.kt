@@ -64,9 +64,16 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun goToVideo(videoUrl: String) {
+        viewModelScope.launch {
+            _eventFlow.emit(UiEvent.OnCourseImageClick(videoUrl))
+        }
+    }
+
     // 可以用於設定畫面跳轉或 UI 顯示改變的一些邏輯
     sealed class UiEvent {
         class OnCourseClick(val title: String) : UiEvent()
+        class OnCourseImageClick(val videoUrl: String) : UiEvent()
     }
 }
 

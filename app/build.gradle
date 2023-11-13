@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
@@ -107,6 +108,10 @@ dependencies {
     implementation "com.google.accompanist:accompanist-webview:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
+
+    // exo player
+    implementation 'androidx.media3:media3-exoplayer:1.0.0-rc02'
+    implementation 'androidx.media3:media3-ui:1.0.0-rc02'
 
 }
 "1.2.0-beta02"

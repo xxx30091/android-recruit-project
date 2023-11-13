@@ -75,6 +75,7 @@ import `in`.hahow.android_recruit_project.data.model.CourseItem
 import `in`.hahow.android_recruit_project.ui.nav.SCREEN_MAIN
 import `in`.hahow.android_recruit_project.ui.preview.CourseDataProvider
 import `in`.hahow.android_recruit_project.ui.screen.purchase.navToPurchase
+import `in`.hahow.android_recruit_project.ui.screen.video.navToVideo
 import `in`.hahow.android_recruit_project.ui.theme.GrayNormalText
 import `in`.hahow.android_recruit_project.ui.theme.GrayProgressBackground
 import `in`.hahow.android_recruit_project.ui.theme.GrayRecyclerViewBackground
@@ -86,6 +87,8 @@ import `in`.hahow.android_recruit_project.ui.widget.UiEventHandler
 import `in`.hahow.android_recruit_project.utils.DateTimeUtils
 import `in`.hahow.android_recruit_project.utils.NumberFormatUtils
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 //@Preview
 @Composable
@@ -200,7 +203,8 @@ fun MainScreen(
                         items(data) {
                             MainCourseItem(
                                 data = it,
-                                onItemClick = { title -> viewModel.showCourseTitle(title) }
+                                onItemClick = { title -> viewModel.showCourseTitle(title) },
+                                onImageClick = { videoUrl ->  viewModel.goToVideo(videoUrl) }
                             )
                         }
                     }
@@ -225,6 +229,10 @@ fun MainScreen(
                     Toast.makeText(context, event.title, Toast.LENGTH_SHORT).show()
                     navController.navToPurchase()
                 }
+                is MainViewModel.UiEvent.OnCourseImageClick -> {
+                    val encodedUrl = URLEncoder.encode(event.videoUrl, StandardCharsets.UTF_8.toString())
+                    navController.navToVideo(encodedUrl)
+                }
             }
         }
     }
@@ -233,7 +241,8 @@ fun MainScreen(
 @Composable
 fun MainCourseItem(
     data: CourseItem,
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
+    onImageClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -253,7 +262,9 @@ fun MainCourseItem(
                 model = data.coverImageUrl,
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .clickable { onImageClick(data.videoUrl) },
                 error = ColorPainter(Color.Gray),
                 placeholder = ColorPainter(Color.Gray)
             )
@@ -495,7 +506,7 @@ fun FilterItem(
 fun PreviewMainCourseItem(
     @PreviewParameter (CourseDataProvider::class) data: CourseItem
 ) {
-    MainCourseItem(data) {}
+    MainCourseItem(data, {} , {})
 }
 
 @Composable

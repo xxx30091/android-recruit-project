@@ -1,11 +1,6 @@
 package `in`.hahow.android_recruit_project
 
 import android.app.Application
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClient.BillingResponseCode
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PurchasesUpdatedListener
 import dagger.hilt.android.HiltAndroidApp
 import `in`.hahow.android_recruit_project.data.loader.CourseLocalDataSource
 import `in`.hahow.android_recruit_project.data.loader.CourseRepository

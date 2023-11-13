@@ -6,5 +6,6 @@ data class CourseItem(
     val proposalDueTime: String? = "",
     val numSoldTickets: Int = 0,
     val title: String = "",
-    val status: String = ""
+    val status: String = "",
+    val videoUrl: String = ""
 )
