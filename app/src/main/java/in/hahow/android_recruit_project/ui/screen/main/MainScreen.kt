@@ -44,6 +44,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -96,7 +97,8 @@ fun MainScreen(
     navController: NavHostController,
     viewModel: MainViewModel
 ) {
-    val state by viewModel.state
+    // 改為 state 以便今後擴展
+    val state by viewModel.state.collectAsState()
     val data = state.data
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -230,6 +232,7 @@ fun MainScreen(
                     navController.navToPurchase()
                 }
                 is MainViewModel.UiEvent.OnCourseImageClick -> {
+                    // 不轉碼沒辦法當 nav argument
                     val encodedUrl = URLEncoder.encode(event.videoUrl, StandardCharsets.UTF_8.toString())
                     navController.navToVideo(encodedUrl)
                 }

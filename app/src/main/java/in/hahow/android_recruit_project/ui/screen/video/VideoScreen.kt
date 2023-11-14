@@ -66,6 +66,7 @@ fun VideoScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+        ExoVideo(exoPlayer = player, videoUrl = videoUrl)
         IconButton(
             onClick = {
                 navController.popBackStack()
@@ -81,7 +82,6 @@ fun VideoScreen(
                 contentDescription = "",
             )
         }
-        ExoVideo(exoPlayer = player, videoUrl = videoUrl)
     }
 }
 
@@ -90,14 +90,14 @@ fun VideoScreen(
 fun ExoVideo(exoPlayer: Player, videoUrl: String) {
     val context = LocalContext.current
 
-    AndroidView(
+    AndroidView( // 要使用 Compose 尚未提供的 UI 元素
         factory = {
             PlayerView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                useController = false
+                useController = true
                 useArtwork = false
                 player = exoPlayer
                 resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
@@ -111,7 +111,7 @@ fun ExoVideo(exoPlayer: Player, videoUrl: String) {
         exoPlayer.repeatMode = ExoPlayer.REPEAT_MODE_ALL
         exoPlayer.prepare()
         exoPlayer.playWhenReady = true
-        Log.d("AppDebug", videoUrl)
+        Log.d("Arthur", videoUrl)
     }
 }
 
@@ -133,10 +133,7 @@ fun NavGraphBuilder.video(navController: NavHostController,) {
 }
 
 fun NavHostController.navToVideo(videoUrl: String) {
-    navigate("${SCREEN_VIDEO}/$videoUrl") {
+    navigate(route = SCREEN_VIDEO.navArgs(videoUrl)) {
         launchSingleTop = true
     }
-//    navigate(route = SCREEN_VIDEO.navArgs(videoUrl)) {
-//        launchSingleTop = true
-//    }
 }

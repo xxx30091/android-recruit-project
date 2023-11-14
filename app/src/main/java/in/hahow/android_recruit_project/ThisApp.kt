@@ -13,8 +13,8 @@ class ThisApp : Application() {
     val courseRepository: CourseRepository
         get() = CourseLocalDataSource(this)
 
-    val googleBillingWrapper: BillingClientWrapper
-        get() = BillingClientWrapper(this)
+//    val googleBillingWrapper: BillingClientWrapper
+//        get() = BillingClientWrapper(this)
 
     companion object {
         var instance: ThisApp by Delegates.notNull()

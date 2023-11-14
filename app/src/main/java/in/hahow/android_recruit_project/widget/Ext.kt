@@ -22,6 +22,10 @@ fun rememberBottomSheetNavigator(skipHalfExpanded: Boolean): BottomSheetNavigato
     }
 }
 
-public fun kotlin.String.navArgs(vararg args: kotlin.Any?): String {
-    return "/$args"
+fun String.navArgs(vararg args: Any?): String {
+    var newArg = ""
+    for (i in args.indices) {
+        newArg = newArg + "/" + args[i].toString()
+    }
+    return this + newArg
 }

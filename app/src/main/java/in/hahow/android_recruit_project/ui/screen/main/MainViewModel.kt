@@ -9,15 +9,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.hahow.android_recruit_project.ThisApp
 import `in`.hahow.android_recruit_project.data.model.CourseItem
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    private val _state = mutableStateOf(MainScreenState())
-    val state: State<MainScreenState> = _state
+    private val _state = MutableStateFlow(MainScreenState())
+    val state = _state.asStateFlow()
+//    private val _state = mutableStateOf(MainScreenState())
+//    val state: State<MainScreenState> = _state
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
